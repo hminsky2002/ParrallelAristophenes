@@ -5,8 +5,8 @@
  *           matrix.  Vectors use block distributions and the
  *           matrix is distributed by block rows.
  *
- * Compile:  mpicc -g -std=c99 -Wall -o mpi_mat_vect_mult mpi_mat_vect_mult.c
- * Run:      mpiexec -n <number of processes> ./mpi_mat_vect_mult
+ * Compile:  mpicc -g -std=c99 -Wall -o vector vector.c
+ * Run:      mpiexec -n <number of processes> ./vector
  *
  * Input:    Dimensions of the matrix (m = number of rows, n
  *              = number of columns)
