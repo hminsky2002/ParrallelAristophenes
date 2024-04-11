@@ -143,6 +143,7 @@ int main(int argc, char *argv[])
     {
         t2 = MPI_Wtime();
         FILE *ptr;
+        int count = 0;
         char filename[20];
         int originalN = atoi(argv[1]);
         sprintf(filename, "./%d.txt", originalN);
@@ -157,10 +158,12 @@ int main(int argc, char *argv[])
             if (base_array[i])
             {
                 fprintf(ptr, "%d ", i);
+                count++;
             }
         }
         fclose(ptr);
         printf("Operation Complete. Time Elapsed: %f  \n", t2 - t1);
+        printf("Number of primes found: %d  \n", count);
         printf("\n");
     }
 

@@ -1,3 +1,5 @@
 .vscode
-*.dSYM
+/primes.dSYM/
 !/**/
+primes
+*.txt
