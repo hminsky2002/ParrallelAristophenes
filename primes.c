@@ -105,6 +105,11 @@ int main(int argc, char *argv[])
     // Allocate local memory
     bool *sub_array = createSubArray(subset_size);
 
+    // Scatter the global data from master process, recieve it
+    // in sub processes. Zoom!
+    MPI_Scatter(base_array, subset_size, MPI_C_BOOL, sub_array,
+                subset_size, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+
     // This loop runs for all values from 2 to the sqrt of N, checking if the values
     // in the processes array chunk are divisible by those values
     for (int i = 2; i < limit + 1; i++)
@@ -112,11 +117,6 @@ int main(int argc, char *argv[])
         // Calculate the numerical value that corresponds to index 0
         // of the sub array for a process
         start = (subset_size * my_rank);
-
-        // Scatter the global data from master process, recieve it
-        // in sub processes. Zoom!
-        MPI_Scatter(base_array, subset_size, MPI_C_BOOL, sub_array,
-                    subset_size, MPI_C_BOOL, 0, MPI_COMM_WORLD);
 
         // Do the sieve thing
         for (int j = 0; j < subset_size; j++)
@@ -126,16 +126,16 @@ int main(int argc, char *argv[])
                 sub_array[j] = false;
             }
         }
+    }
 
-        // Gather the data if the root process, send it if sub
-        if (my_rank == 0)
-        {
-            MPI_Gather(sub_array, subset_size, MPI_C_BOOL, base_array, subset_size, MPI_C_BOOL, 0, MPI_COMM_WORLD);
-        }
-        else
-        {
-            MPI_Gather(sub_array, subset_size, MPI_C_BOOL, NULL, subset_size, MPI_C_BOOL, 0, MPI_COMM_WORLD);
-        }
+    // Gather the data if the root process, send it if sub
+    if (my_rank == 0)
+    {
+        MPI_Gather(sub_array, subset_size, MPI_C_BOOL, base_array, subset_size, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+    }
+    else
+    {
+        MPI_Gather(sub_array, subset_size, MPI_C_BOOL, NULL, subset_size, MPI_C_BOOL, 0, MPI_COMM_WORLD);
     }
 
     // If we're back to the master process, time to write out the data
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
         {
             if (base_array[i])
             {
-                fprintf(ptr, "%d ", i); 
+                fprintf(ptr, "%d ", i);
                 count++;
                 if (count % 20 == 0)
                 {
@@ -165,12 +165,11 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        fprintf(ptr,"\n__________________________________\n");
-        fprintf(ptr,"Time Elapsed: %f  \n", t2 - t1);
+        fprintf(ptr, "\n__________________________________\n");
+        fprintf(ptr, "Time Elapsed: %f  \n", t2 - t1);
         fclose(ptr);
         printf("Operation Complete. Time Elapsed: %f  \n", t2 - t1);
         printf("\n");
-        
     }
 
     // Give the data back to god (computer)
