@@ -152,21 +152,13 @@ int main(int argc, char *argv[])
             perror("File opening failed");
             return EXIT_FAILURE;
         }
-        int count = 0;
         for (int i = 2; i < originalN; i++)
         {
             if (base_array[i])
             {
                 fprintf(ptr, "%d ", i);
-                count++;
-                if (count % 20 == 0)
-                {
-                    fprintf(ptr, "\n");
-                }
             }
         }
-        fprintf(ptr, "\n__________________________________\n");
-        fprintf(ptr, "Time Elapsed: %f  \n", t2 - t1);
         fclose(ptr);
         printf("Operation Complete. Time Elapsed: %f  \n", t2 - t1);
         printf("\n");
